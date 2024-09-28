@@ -15,4 +15,4 @@ tyyu
 
 Ganesh - creating new Folder Pages and currently working in it
 
-Mahadev-register and login
+Mahadev-register and login pages
