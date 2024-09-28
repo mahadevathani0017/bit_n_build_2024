@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { app } from "../firebase";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const auth = getAuth(app);
 
@@ -10,9 +11,15 @@ function Register() {
     lastName: "",
     email: "",
     phoneNumber: "",
-    countryCode: "+1", // default country code
+    countryCode: "+1",
     password: "",
     confirmPassword: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    label: "Weak"
   });
 
   const handleChange = (e) => {
@@ -20,6 +27,34 @@ function Register() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+
+    if (e.target.name === "password") {
+      evaluatePasswordStrength(e.target.value); // Evaluate password as user types
+    }
+  };
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Function to evaluate password strength
+  const evaluatePasswordStrength = (password) => {
+    let score = 0;
+    if (password.length >= 8) score += 1; // Minimum length
+    if (/[A-Z]/.test(password)) score += 1; // Uppercase letter
+    if (/[a-z]/.test(password)) score += 1; // Lowercase letter
+    if (/\d/.test(password)) score += 1; // Digit
+    if (/[@$!%*?&#]/.test(password)) score += 1; // Special character
+
+    let label = "Weak";
+    if (score >= 4) {
+      label = "Strong";
+    } else if (score >= 3) {
+      label = "Medium";
+    }
+
+    setPasswordStrength({ score, label });
   };
 
   const createUser = () => {
@@ -45,6 +80,7 @@ function Register() {
         <h1 className="text-3xl font-semibold mb-8 text-center text-gray-800">Create an Account</h1>
 
         <div className="space-y-6">
+          {/* First Name Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
             <input
@@ -58,6 +94,7 @@ function Register() {
             />
           </div>
 
+          {/* Last Name Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
             <input
@@ -71,6 +108,7 @@ function Register() {
             />
           </div>
 
+          {/* Email Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
@@ -84,6 +122,7 @@ function Register() {
             />
           </div>
 
+          {/* Phone Number Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
             <div className="flex">
@@ -96,20 +135,6 @@ function Register() {
                 <option value="+1">+1 (US)</option>
                 <option value="+44">+44 (UK)</option>
                 <option value="+91">+91 (India)</option>
-                <option value="+61">+61 (Australia)</option>
-                <option value="+81">+81 (Japan)</option>
-                <option value="+49">+49 (Germany)</option>
-                <option value="+33">+33 (France)</option>
-                <option value="+86">+86 (China)</option>
-                <option value="+55">+55 (Brazil)</option>
-                <option value="+7">+7 (Russia)</option>
-                <option value="+234">+234 (Nigeria)</option>
-                <option value="+27">+27 (South Africa)</option>
-                <option value="+52">+52 (Mexico)</option>
-                <option value="+39">+39 (Italy)</option>
-                <option value="+34">+34 (Spain)</option>
-                <option value="+62">+62 (Indonesia)</option>
-                <option value="+971">+971 (UAE)</option>
                 {/* Add more country codes as needed */}
               </select>
               <input
@@ -124,30 +149,55 @@ function Register() {
             </div>
           </div>
 
-          <div>
+          {/* Password Input */}
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               onChange={handleChange}
               value={formData.password}
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               placeholder="********"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
           </div>
 
-          <div>
+          {/* Password Strength Meter */}
+          <div className="flex items-center mt-2">
+            <div className="w-full bg-gray-300 rounded h-2">
+              <div
+                className={`h-2 rounded transition-all duration-300 ${passwordStrength.score >= 4 ? "bg-green-500" : passwordStrength.score >= 3 ? "bg-yellow-500" : "bg-red-500"}`}
+                style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
+              />
+            </div>
+            <span className="ml-3 text-sm font-medium text-gray-600">{passwordStrength.label}</span>
+          </div>
+
+          {/* Confirm Password Input */}
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
             <input
               onChange={handleChange}
               value={formData.confirmPassword}
               name="confirmPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               placeholder="********"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div
+              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
           </div>
 
           <button
@@ -157,13 +207,6 @@ function Register() {
             Sign Up
           </button>
         </div>
-
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:text-blue-700">
-            Log in
-          </a>
-        </p>
       </div>
     </div>
   );
