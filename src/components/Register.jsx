@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { app } from "../firebase";
+import { app } from "../Firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const auth = getAuth(app);
 
 function Register() {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     firstName: "",
     lastName: "",
     email: "",
@@ -14,13 +14,20 @@ function Register() {
     countryCode: "+1",
     password: "",
     confirmPassword: "",
-  });
+  };
 
+  const [formData, setFormData] = useState(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
-    label: "Weak"
+    label: "Weak",
   });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 2000); 
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -29,23 +36,21 @@ function Register() {
     });
 
     if (e.target.name === "password") {
-      evaluatePasswordStrength(e.target.value); // Evaluate password as user types
+      evaluatePasswordStrength(e.target.value);
     }
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Function to evaluate password strength
   const evaluatePasswordStrength = (password) => {
     let score = 0;
-    if (password.length >= 8) score += 1; // Minimum length
-    if (/[A-Z]/.test(password)) score += 1; // Uppercase letter
-    if (/[a-z]/.test(password)) score += 1; // Lowercase letter
-    if (/\d/.test(password)) score += 1; // Digit
-    if (/[@$!%*?&#]/.test(password)) score += 1; // Special character
+    if (password.length >= 8) score += 1;
+    if (/[A-Z]/.test(password)) score += 1;
+    if (/[a-z]/.test(password)) score += 1;
+    if (/\d/.test(password)) score += 1;
+    if (/[@$!%*?&#]/.test(password)) score += 1;
 
     let label = "Weak";
     if (score >= 4) {
@@ -65,14 +70,34 @@ function Register() {
     }
 
     createUserWithEmailAndPassword(auth, email, password)
-      .then((value) => {
+      .then(() => {
         alert("Success");
         console.log("User Info:", formData);
+        // Reset form data
+        setFormData(initialFormData);
       })
       .catch((error) => {
         alert(error.message);
       });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: "rgb(160, 198, 247)" }}>
+        <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-md">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-300 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: "rgb(160, 198, 247)" }}>
@@ -80,7 +105,6 @@ function Register() {
         <h1 className="text-3xl font-semibold mb-8 text-center text-gray-800">Create an Account</h1>
 
         <div className="space-y-6">
-          {/* First Name Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
             <input
@@ -94,7 +118,6 @@ function Register() {
             />
           </div>
 
-          {/* Last Name Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
             <input
@@ -108,7 +131,6 @@ function Register() {
             />
           </div>
 
-          {/* Email Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
@@ -122,7 +144,6 @@ function Register() {
             />
           </div>
 
-          {/* Phone Number Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
             <div className="flex">
@@ -135,7 +156,6 @@ function Register() {
                 <option value="+1">+1 (US)</option>
                 <option value="+44">+44 (UK)</option>
                 <option value="+91">+91 (India)</option>
-                {/* Add more country codes as needed */}
               </select>
               <input
                 onChange={handleChange}
@@ -149,7 +169,6 @@ function Register() {
             </div>
           </div>
 
-          {/* Password Input */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
@@ -169,20 +188,28 @@ function Register() {
             </div>
           </div>
 
-          {/* Password Strength Meter */}
           <div className="flex items-center mt-2">
             <div className="w-full bg-gray-300 rounded h-2">
               <div
-                className={`h-2 rounded transition-all duration-300 ${passwordStrength.score >= 4 ? "bg-green-500" : passwordStrength.score >= 3 ? "bg-yellow-500" : "bg-red-500"}`}
+                className={`h-2 rounded transition-all duration-300 ${
+                  passwordStrength.score >= 4
+                    ? "bg-green-500"
+                    : passwordStrength.score >= 3
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
                 style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
               />
             </div>
-            <span className="ml-3 text-sm font-medium text-gray-600">{passwordStrength.label}</span>
+            <span className="ml-3 text-sm font-medium text-gray-600">
+              {passwordStrength.label}
+            </span>
           </div>
 
-          {/* Confirm Password Input */}
           <div className="relative">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
             <input
               onChange={handleChange}
               value={formData.confirmPassword}

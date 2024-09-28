@@ -1,17 +1,42 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const categories = [
   { name: "Clothes", icon: "👕" },
   { name: "Electronics", icon: "📱" },
   { name: "Accessories", icon: "👜" },
-]
+];
 
 export default function UserInventory() {
-  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a loading time of 2 seconds
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-700 to-pink-500 flex flex-col items-center justify-center p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+          {categories.map((_, index) => (
+            <div key={index} className="bg-gray-900 bg-opacity-50 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-8 flex flex-col items-center justify-center animate-pulse">
+              <div className="bg-gray-700 h-16 w-16 rounded-full mb-4"></div>
+              <div className="bg-gray-700 h-6 w-24 rounded-md"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-700 to-pink-500 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen font-oswald bg-gradient-to-br from-purple-900 via-purple-700 to-pink-500 flex flex-col items-center justify-center p-4">
       <motion.h1 
         className="text-4xl md:text-6xl font-bold text-white mb-12 text-center"
         initial={{ opacity: 0, y: -50 }}
@@ -40,5 +65,5 @@ export default function UserInventory() {
         ))}
       </div>
     </div>
-  )
+  );
 }
