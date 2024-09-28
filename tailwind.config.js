@@ -6,7 +6,13 @@ export default {
   ],
 
   theme: {
-    extend: {},
+    extend: {
+      textFillColor: theme => theme('colors'),
+      fontFamily: {
+        oswald: ['Oswald','sans-serif'],
+        shad: ["Shadows Into Light", "cursive"],
+      }
+    },
   },
   plugins: [],
 }

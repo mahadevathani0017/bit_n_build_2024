@@ -11,7 +11,7 @@ export default function UserInventory() {
   const [hoveredIndex, setHoveredIndex] = useState(null)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-700 to-pink-500 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen font-oswald bg-gradient-to-br from-purple-900 via-purple-700 to-pink-500 flex flex-col items-center justify-center p-4">
       <motion.h1 
         className="text-4xl md:text-6xl font-bold text-white mb-12 text-center"
         initial={{ opacity: 0, y: -50 }}
