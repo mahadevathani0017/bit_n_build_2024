@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getDatabase, ref, push, set } from "firebase/database";
-import { app } from "../Firebase"; // Assuming firebase is initialized here
+import { app } from "../firebase"; //
 
 const db = getDatabase(app); // Initialize Realtime Database
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { getDatabase, ref, push, set } from "firebase/database";
-import { db } from "../Firebase"; // Import your firebase config
+import { getDatabase, ref, push, set, get } from "firebase/database";
+
+const db=getDatabase(app);
 
 const AddFootwear = () => {
   const [formData, setFormData] = useState({

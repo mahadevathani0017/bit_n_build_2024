@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { app } from '../Firebase';
+import { app } from '../firebase';
 import { FaSpinner } from 'react-icons/fa';
 
 const auth = getAuth(app);

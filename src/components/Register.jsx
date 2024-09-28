@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { app } from "../Firebase";
+import { app } from "../firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const auth = getAuth(app);
