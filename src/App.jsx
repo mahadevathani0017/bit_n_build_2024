@@ -4,6 +4,7 @@ import SignIn from './components/SignIn';
 import UserInventor from './Pages/UserInventory'
 import AddClothes from './components/AddClothes';
 import Display from './components/Display';
+import AddFootwear from './components/AddFootwear';
 
 function App() {
   return(
@@ -14,6 +15,7 @@ function App() {
     <SignIn/> 
     <AddClothes/>
     <Display/>
+    <AddFootwear/>
     </>
   )
 }
